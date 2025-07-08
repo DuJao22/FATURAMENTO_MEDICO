@@ -18,7 +18,7 @@ def normalizar(texto):
 
 # Caminho do arquivo CSV e nome do banco
 csv_path = "Relatorio/relatorio.csv"
-db_dir = "dados"
+db_dir = "data"
 db_path = os.path.join(db_dir, "agenda_profissionais.db")
 
 # Criar diretório se não existir
