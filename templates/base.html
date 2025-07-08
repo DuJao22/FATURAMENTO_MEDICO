@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Relatórios de Atendimentos{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background: #2c3e50;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav a:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+        }
+        
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .date-filter input {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        
+        .date-filter button {
+            padding: 6px 12px;
+            background: #4facfe;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .date-filter button:hover {
+            background: #369fe0;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.6em;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #4facfe;
+        }
+        
+        .stat-card h3 {
+            color: #4facfe;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .professional-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .professional-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #4facfe;
+            transition: all 0.3s ease;
+        }
+        
+        .professional-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .professional-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .professional-card .specialty {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .professional-card .stats-mini {
+            color: #4facfe;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            background: #4facfe;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #4facfe;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        
+        .btn:hover {
+            background: #369fe0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .convenio-hapvida { border-left: 4px solid #e74c3c; }
+        .convenio-notredame { border-left: 4px solid #f39c12; }
+        .convenio-confianca { border-left: 4px solid #2ecc71; }
+        .convenio-medgold { border-left: 4px solid #9b59b6; }
+        .convenio-you { border-left: 4px solid #3498db; }
+        .convenio-atende { border-left: 4px solid #e67e22; }
+        
+        .currency {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .professional-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .date-filter {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{% block header %}Sistema de Relatórios{% endblock %}</h1>
+            <p>Gestão de Atendimentos Profissionais</p>
+        </div>
+        
+        <div class="nav">
+            <div class="nav-links">
+                <a href="/">Início</a>
+                <a href="/relatorio/todos">Relatório Geral</a>
+            </div>
+            
+            {% block nav_extra %}{% endblock %}
+        </div>
+        
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function applyDateFilter() {
+            const dataInicio = document.getElementById('data_inicio').value;
+            const dataFim = document.getElementById('data_fim').value;
+            
+            if (dataInicio && dataFim) {
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.set('data_inicio', dataInicio);
+                currentUrl.searchParams.set('data_fim', dataFim);
+                window.location.href = currentUrl.toString();
+            } else {
+                alert('Por favor, selecione ambas as datas.');
+            }
+        }
+
+        function clearDateFilter() {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.delete('data_inicio');
+            currentUrl.searchParams.delete('data_fim');
+            window.location.href = currentUrl.toString();
+        }
+    </script>
+</body>
+</html>
